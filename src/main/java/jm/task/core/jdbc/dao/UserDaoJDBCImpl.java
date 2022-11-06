@@ -4,10 +4,8 @@ import jm.task.core.jdbc.mapper.UserMapper;
 import jm.task.core.jdbc.model.User;
 import jm.task.core.jdbc.util.Util;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 
 public class UserDaoJDBCImpl implements UserDao {
@@ -82,7 +80,20 @@ public class UserDaoJDBCImpl implements UserDao {
     }
 
     public List<User> getAllUsers() {
-        return null;
+        List<User> courseList = new ArrayList<>();
+        String sql = "select id, name, last_name, age from user;";
+        try (final Connection connection = Util.getConnection();
+             final ResultSet resultSet = connection.createStatement().executeQuery(sql)) {
+            while (resultSet.next()) {
+                User user = USER_MAPPER.map(resultSet);
+                courseList.add(user);
+            }
+        } catch (SQLException e) {
+            System.err.println("cant get all users");
+            e.printStackTrace();
+        }
+        System.out.println("GET ALL users OK...");
+        return courseList;
     }
 
     public void cleanUsersTable() {

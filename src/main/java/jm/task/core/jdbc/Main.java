@@ -22,9 +22,14 @@ public class Main {
         userService.saveUser("Petr", "Petrov", (byte) 23);
         userService.saveUser("Anton", "Antonov", (byte) 33);
         userService.saveUser("Andrey", "Andreev", (byte) 43);
+
+        System.out.println(userService.getAllUsers());
+
         userService.removeUserById(1);
+
         userService.cleanUsersTable();
 
+        System.out.println(userService.getAllUsers());
         // drop table
         //userService.dropUsersTable();
     }
