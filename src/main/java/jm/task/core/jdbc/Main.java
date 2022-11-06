@@ -10,8 +10,6 @@ public class Main {
         // реализуйте алгоритм здесь
         UserService userService = new UserServiceImpl(new UserDaoJDBCImpl());
 
-        userService.dropUsersTable();
-
         userService.createUsersTable();
         // save
         User ivan = new User();
@@ -30,7 +28,7 @@ public class Main {
         userService.cleanUsersTable();
 
         System.out.println(userService.getAllUsers());
-        // drop table
-        //userService.dropUsersTable();
+        //drop table
+        userService.dropUsersTable();
     }
 }
