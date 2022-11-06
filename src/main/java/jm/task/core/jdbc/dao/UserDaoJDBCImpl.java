@@ -1,14 +1,17 @@
 package jm.task.core.jdbc.dao;
 
+import jm.task.core.jdbc.mapper.UserMapper;
 import jm.task.core.jdbc.model.User;
 import jm.task.core.jdbc.util.Util;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
 
 public class UserDaoJDBCImpl implements UserDao {
+    public static final UserMapper USER_MAPPER = new UserMapper();
 
     public UserDaoJDBCImpl() {
 
@@ -18,7 +21,7 @@ public class UserDaoJDBCImpl implements UserDao {
         String script = """
                                 CREATE TABLE user
                                 (
-                                    id   bigint        NOT NULL PRIMARY KEY,
+                                    id   bigint        NOT NULL AUTO_INCREMENT PRIMARY KEY,
                                     name varchar(255) NOT NULL,
                                     last_name  varchar(255) NOT NULL,
                                     age tinyint NOT NULL
@@ -47,7 +50,20 @@ public class UserDaoJDBCImpl implements UserDao {
     }
 
     public void saveUser(String name, String lastName, byte age) {
-
+        String sql = "INSERT INTO user (id, name, last_name, age) values(DEFAULT,?,?,?);";
+        User user = new User();
+        user.setName(name);
+        user.setLastName(lastName);
+        user.setAge(age);
+        try (final Connection connection = Util.getConnection();
+             final PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            USER_MAPPER.map(statement, user);
+            statement.executeUpdate();
+            System.out.println("SAVE OK... user with lastname " + lastName);
+        } catch (SQLException e) {
+            System.err.println("cant save user");
+            e.printStackTrace();
+        }
     }
 
     public void removeUserById(long id) {
