@@ -19,6 +19,11 @@ public class Main {
         ivan.setLastName("Ivanov");
         ivan.setAge((byte) 22);
         userService.saveUser(ivan.getName(), ivan.getLastName(), ivan.getAge());
+        userService.saveUser("Petr", "Petrov", (byte) 23);
+        userService.saveUser("Anton", "Antonov", (byte) 33);
+        userService.saveUser("Andrey", "Andreev", (byte) 43);
+        userService.removeUserById(1);
+        userService.cleanUsersTable();
 
         // drop table
         //userService.dropUsersTable();

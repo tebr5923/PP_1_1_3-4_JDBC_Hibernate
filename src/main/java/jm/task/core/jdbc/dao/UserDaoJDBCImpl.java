@@ -33,7 +33,7 @@ public class UserDaoJDBCImpl implements UserDao {
             System.out.println("creat table user");
         } catch (SQLException e) {
             System.err.println("NOT creat table user");
-            throw new IllegalStateException("NOT creat table user", e);
+            e.printStackTrace();
         }
     }
 
@@ -45,7 +45,7 @@ public class UserDaoJDBCImpl implements UserDao {
             System.out.println("drop table user");
         } catch (SQLException e) {
             System.err.println("NOT drop table user");
-            throw new IllegalStateException("NOT drop table user", e);
+            e.printStackTrace();
         }
     }
 
@@ -67,7 +67,18 @@ public class UserDaoJDBCImpl implements UserDao {
     }
 
     public void removeUserById(long id) {
-
+        String sql = "DELETE FROM user WHERE id=?;";
+        try (final Connection connection = Util.getConnection();
+             final PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setLong(1, id);
+            if (statement.executeUpdate() == 0) {
+                System.err.println("FAIL DELETE user with id " + id);
+            }
+            System.out.println("DELETE OK... user with id " + id);
+        } catch (SQLException e) {
+            System.err.println("cant delete user with id " + id);
+            e.printStackTrace();
+        }
     }
 
     public List<User> getAllUsers() {
@@ -75,6 +86,14 @@ public class UserDaoJDBCImpl implements UserDao {
     }
 
     public void cleanUsersTable() {
-
+        String sql = "DELETE FROM user;";
+        try (final Connection connection = Util.getConnection();
+             final Statement statement = connection.createStatement()) {
+            statement.execute(sql);
+            System.out.println("clean table Users OK");
+        } catch (SQLException e) {
+            System.err.println("NOT clean table Users");
+            e.printStackTrace();
+        }
     }
 }
